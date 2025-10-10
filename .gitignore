@@ -66,6 +66,5 @@ coverage/
 *.sqlite3
 
 # npm package lock
-package-lock.json
 yarn.lock
 .vercel
