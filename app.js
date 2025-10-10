@@ -19,7 +19,7 @@ const app = express();
 // ✅ FIXED CORS CONFIG
 const allowedOrigins = [
     "http://localhost:5173", // local frontend (Vite)
-    "http://localhost:3000", // alt local frontend
+    "http://localhost:5000", // alt local frontend
     "https://url-shortner-frontend-six-zeta.vercel.app/" // production frontend on Vercel
 ];
 
