@@ -67,4 +67,3 @@ coverage/
 
 # npm package lock
 yarn.lock
-.vercel
