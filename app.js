@@ -20,7 +20,8 @@ const app = express();
 const allowedOrigins = [
     "http://localhost:5173", // local frontend (Vite)
     "http://localhost:5000", // alt local frontend
-    "https://url-shortner-frontend-six-zeta.vercel.app/" // production frontend on Vercel
+    "https://url-shortner-frontend-six-zeta.vercel.app/",
+    "https://url-shortner-backend-ozur.onrender.com" // production frontend on Vercel
 ];
 
 app.use(
