@@ -17,9 +17,10 @@ import cookieParser from "cookie-parser"
 const app = express();
 
 app.use(cors({
-    origin: 'http://urlify.co.in',
-    methods: ["GET", "POST",], // Frontend url 
-    credentials: true       //👈 this allows cookies to be sent
+    origin: ['http://urlify.co.in', 'https://urlify.co.in', 'http://www.urlify.co.in', 'https://www.urlify.co.in'],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"], 
+    credentials: true,       //👈 this allows cookies to be sent
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
 }));
 
 
