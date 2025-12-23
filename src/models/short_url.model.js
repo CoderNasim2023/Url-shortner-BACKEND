@@ -21,7 +21,12 @@ const shortUrlSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   }
-});
+},
+  {
+    timestamps: true, // ⬅️ createdAt & updatedAt auto add হবে
+    
+  }
+ );
 
 const shortUrl = mongoose.model("shortUrl", shortUrlSchema);
 

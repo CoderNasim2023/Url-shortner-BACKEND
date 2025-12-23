@@ -17,10 +17,14 @@ import cookieParser from "cookie-parser"
 const app = express();
 
 app.use(cors({
-    origin: 'http://localhost:5173',
-    methods: ["POST"] // Frontend url 
-    credentials: true // 👈 this allows cookies to be sent
+    origin: 'http://urlify.co.in',
+    methods: ["GET", "POST",], // Frontend url 
+    credentials: true       //👈 this allows cookies to be sent
 }));
+
+
+
+
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -31,9 +35,14 @@ app.use(attachUser)
 app.use("/api/user", user_routes)
 app.use("/api/auth", auth_routes)
 app.use("/api/create", short_url)
+
 app.get("/:id", redirectFromShortUrl)
 
 app.use(errorHandler)
+
+app.use('/',(req,res)=>{
+    res.send("Backend Default home route is running succesfully")
+})
 
 app.listen(3000, () => {
     connectDB()
