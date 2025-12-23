@@ -3,8 +3,9 @@
 
 export const cookieOptions = {
     httpOnly: true,
-    // In production keep secure=true and sameSite=Lax; for local dev allow cross-site cookies
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "Lax" : "None",
-    maxAge: 1000 * 60* 5 // 5 minutes
+    // For cross-domain cookies (frontend on GoDaddy, backend on Render), use secure=true and sameSite=None
+    secure: true,  // Must be true for sameSite=None to work
+    sameSite: "None",  // Required for cross-domain cookies
+    maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+    path: '/'  // Make cookie available for all routes
 }

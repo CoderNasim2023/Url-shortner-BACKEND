@@ -16,11 +16,28 @@ import cookieParser from "cookie-parser"
 
 const app = express();
 
+// CORS configuration - must be before other middleware
 app.use(cors({
-    origin: ['http://urlify.co.in', 'https://urlify.co.in', 'http://www.urlify.co.in', 'https://www.urlify.co.in'],
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        const allowedOrigins = [
+            'http://urlify.co.in', 
+            'https://urlify.co.in', 
+            'http://www.urlify.co.in', 
+            'https://www.urlify.co.in',
+            'http://localhost:5173', // For local development
+            'http://127.0.0.1:5173'
+        ];
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"], 
     credentials: true,       //👈 this allows cookies to be sent
-    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'Set-Cookie'],
+    exposedHeaders: ['Set-Cookie']
 }));
 
 
