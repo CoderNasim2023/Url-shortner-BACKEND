@@ -54,13 +54,16 @@ app.use("/api/user", user_routes)
 app.use("/api/auth", auth_routes)
 app.use("/api/create", short_url)
 
-app.get("/:id", redirectFromShortUrl)
-
-app.use(errorHandler)
-
-app.use('/',(req,res)=>{
+// Home route - must come before catch-all route
+app.get('/', (req, res) => {
     res.send("Backend Default home route is running succesfully")
 })
+
+// Catch-all route for short URL redirection - must be after all other routes
+app.get("/:id", redirectFromShortUrl)
+
+// Error handler must be the last middleware
+app.use(errorHandler)
 
 app.listen(3000, () => {
     connectDB()
