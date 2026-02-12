@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "k6": "k6 run load-tests/redirect_test.js",
+    "k6:docker": "docker run --rm -i -v ${PWD}/BACKEND/load-tests:/tests -w /tests loadimpact/k6 run redirect_test.js"
   },
   "keywords": [],
   "author": "",
@@ -18,9 +20,14 @@
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
     "express": "^5.1.0",
+    "express-rate-limit": "^8.2.1",
+    "express-validator": "^7.3.1",
+    "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.18.3",
+    "morgan": "^1.10.1",
     "nanoid": "^5.1.6",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "redis": "^5.10.0"
   }
 }

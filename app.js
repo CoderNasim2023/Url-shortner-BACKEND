@@ -11,6 +11,10 @@ import { errorHandler } from "./src/utils/errorHandler.js";
 import cors from "cors"
 import { attachUser } from "./src/utils/attachUser.js";
 import cookieParser from "cookie-parser"
+import helmet from 'helmet'
+import morgan from 'morgan'
+import rateLimit from 'express-rate-limit'
+import { initRedis } from './src/config/redis.config.js'
 
 
 
@@ -21,10 +25,12 @@ app.use(cors({
     origin: function (origin, callback) {
         // Allow requests with no origin (like mobile apps or curl requests)
         const allowedOrigins = [
-            'http://urlify.co.in', 
-            'https://urlify.co.in', 
-            'http://www.urlify.co.in', 
+            'http://urlify.co.in',
+            'https://urlify.co.in',
+            'http://www.urlify.co.in',
             'https://www.urlify.co.in',
+            'http://you.urlify.co.in',
+            'https://you.urlify.co.in',
             'http://localhost:5173', // For local development
             'http://127.0.0.1:5173'
         ];
@@ -34,7 +40,7 @@ app.use(cors({
             callback(new Error('Not allowed by CORS'));
         }
     },
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"], 
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     credentials: true,       //👈 this allows cookies to be sent
     allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'Set-Cookie'],
     exposedHeaders: ['Set-Cookie']
@@ -43,6 +49,15 @@ app.use(cors({
 
 
 
+
+app.use(helmet());
+app.use(morgan('combined'));
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: Number(process.env.RATE_LIMIT_MAX) || 100
+});
+app.use(limiter);
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -59,15 +74,26 @@ app.get('/', (req, res) => {
     res.send("Backend Default home route is running succesfully")
 })
 
+// Health check
+app.get('/health', (req, res) => {
+    res.json({ status: 'ok', uptime: process.uptime(), timestamp: Date.now() })
+})
+
 // Catch-all route for short URL redirection - must be after all other routes
 app.get("/:id", redirectFromShortUrl)
 
 // Error handler must be the last middleware
 app.use(errorHandler)
 
-app.listen(3000, () => {
-    connectDB()
-    console.log(" Backend Server is running on http://localhost:3000");
+const PORT = process.env.PORT || 3000
+app.listen(PORT, async () => {
+    await connectDB()
+    try {
+        await initRedis()
+    } catch (err) {
+        console.error('Redis initialization failed:', err)
+    }
+    console.log(` Backend Server is running on http://localhost:${PORT}`);
 })
 
 // GET - Redirection 
