@@ -31,7 +31,7 @@ app.use(cors({
             'https://www.urlify.co.in',
             'http://you.urlify.co.in',
             'https://you.urlify.co.in',
-            'http://localhost:5173', // For local development
+            'http://localhost:5173', // For localhost  development
             'http://127.0.0.1:5173'
         ];
         if (!origin || allowedOrigins.includes(origin)) {
@@ -63,10 +63,9 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 
-app.use(attachUser)
-
-app.use("/api/user", user_routes)
 app.use("/api/auth", auth_routes)
+app.use(attachUser)
+app.use("/api/user", user_routes)
 app.use("/api/create", short_url)
 
 // Home route - must come before catch-all route
