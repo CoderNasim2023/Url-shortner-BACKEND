@@ -2,6 +2,7 @@ import { getShortUrl } from "../dao/short_url.js"
 import { createShortUrlWithoutUser, createShortUrlWithUser } from "../services/short_url.service.js"
 import wrapAsync from "../utils/tryCatchWrapper.js"
 import { getRedisClient } from "../config/redis.config.js"
+import { NotFoundError } from "../utils/errorHandler.js"
 
 export const createShortUrl = wrapAsync(async (req, res) => {
     const data = req.body
@@ -33,7 +34,9 @@ export const redirectFromShortUrl = wrapAsync(async (req, res) => {
     }
 
     const url = await getShortUrl(id)
-    if (!url) throw new Error("Short URL not found")
+    if (!url) {
+        throw new NotFoundError("Short URL not found")
+    }
 
     // cache for 1 hour
     try {
