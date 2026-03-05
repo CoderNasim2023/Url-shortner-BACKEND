@@ -59,7 +59,7 @@ app.use(cors({
             'https://www.urlify.co.in',
             'http://you.urlify.co.in',
             'https://you.urlify.co.in',
-            'http://localhost:5173', // For localhost  development
+            'http://localhost:5173',
             'http://127.0.0.1:5173',
             'http://localhost:3000'
         ];
