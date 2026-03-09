@@ -57,8 +57,8 @@ app.use(cors({
             'https://urlify.co.in',
             'http://www.urlify.co.in',
             'https://www.urlify.co.in',
-            'http://www.shorturl.urlify.co.in',
-            'https://www.shorturl.urlify.co.in',
+            'http://shorturl.urlify.co.in',
+            'https://shorturl.urlify.co.in',
             'http://localhost:5173',
             'http://127.0.0.1:5173',
             'http://localhost:3000'
