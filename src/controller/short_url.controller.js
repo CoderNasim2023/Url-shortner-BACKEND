@@ -23,10 +23,12 @@ export const redirectFromShortUrl = wrapAsync(async (req, res) => {
     // try redis cache first
     try {
         const client = getRedisClient()
-        const cacheKey = `short:${id}`
-        const cached = await client.get(cacheKey)
-        if (cached) {
-            return res.redirect(302, cached)
+        if (client) {
+            const cacheKey = `short:${id}`
+            const cached = await client.get(cacheKey)
+            if (cached) {
+                return res.redirect(302, cached)
+            }
         }
     } catch (err) {
         // If Redis is not available, continue to DB lookup
@@ -41,7 +43,9 @@ export const redirectFromShortUrl = wrapAsync(async (req, res) => {
     // cache for 1 hour
     try {
         const client = getRedisClient()
-        await client.setEx(`short:${id}`, 3600, url.full_url)
+        if (client) {
+            await client.setEx(`short:${id}`, 3600, url.full_url)
+        }
     } catch (err) {
         console.warn('Failed to set redis cache', err && err.message)
     }
@@ -55,10 +59,12 @@ export const resolveShortUrl = wrapAsync(async (req, res) => {
     // try redis cache first
     try {
         const client = getRedisClient()
-        const cacheKey = `short:${id}`
-        const cached = await client.get(cacheKey)
-        if (cached) {
-            return res.status(200).json({ full_url: cached })
+        if (client) {
+            const cacheKey = `short:${id}`
+            const cached = await client.get(cacheKey)
+            if (cached) {
+                return res.status(200).json({ full_url: cached })
+            }
         }
     } catch (err) {
         console.warn('Redis unavailable, falling back to DB', err && err.message)
@@ -70,7 +76,9 @@ export const resolveShortUrl = wrapAsync(async (req, res) => {
     // cache for 1 hour
     try {
         const client = getRedisClient()
-        await client.setEx(`short:${id}`, 3600, url.full_url)
+        if (client) {
+            await client.setEx(`short:${id}`, 3600, url.full_url)
+        }
     } catch (err) {
         console.warn('Failed to set redis cache', err && err.message)
     }

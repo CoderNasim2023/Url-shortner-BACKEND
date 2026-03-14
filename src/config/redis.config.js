@@ -1,22 +1,43 @@
 import { createClient } from 'redis';
 
-let client;
+let client = null;
+let redisAvailable = false;
 
 export async function initRedis() {
-  if (client) return client;
-  const url = process.env.REDIS_URL || 'redis://localhost:6379';
-  client = createClient({ url });
+  const url = process.env.REDIS_URL;
 
-  client.on('error', (err) => {
-    console.error('Redis Client Error', err);
-  });
+  // If no REDIS_URL is set, skip Redis entirely
+  if (!url) {
+    console.log('⚠️ REDIS_URL not set. Running without Redis cache.');
+    return null;
+  }
 
-  await client.connect();
-  console.log('Connected to Redis');
-  return client;
+  try {
+    client = createClient({ url });
+
+    client.on('error', (err) => {
+      console.error('Redis Client Error:', err.message);
+      redisAvailable = false;
+    });
+
+    client.on('ready', () => {
+      redisAvailable = true;
+      console.log('✅ Connected to Redis');
+    });
+
+    await client.connect();
+    redisAvailable = true;
+    return client;
+  } catch (err) {
+    console.error('⚠️ Redis connection failed, running without cache:', err.message);
+    client = null;
+    redisAvailable = false;
+    return null;
+  }
 }
 
 export function getRedisClient() {
-  if (!client) throw new Error('Redis client not initialized. Call initRedis() first.');
+  // Return null instead of throwing — callers should handle null gracefully
+  if (!client || !redisAvailable) return null;
   return client;
 }
